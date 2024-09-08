@@ -1,4 +1,7 @@
-# In[1]:
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[2]:
 
 
 import numpy as np
@@ -9,7 +12,7 @@ from collections import Counter
 
 # Consider a `SporadicClassifier` that returns a random label in {`True`, `False`} for any test input that’s fed to it. This classifier does not require any training! Hope, that was already obvious to you. Implement this `SporadicClassifier` as a Python class by extending the `BaseEstimator` class of sklearn, so that you have mandatory methods such as `fit(X, y)` and `predict(X)` are implemented. As your guess, the `fit()` method would be a dummy ‘pass’, but the `predict()` method would return `True` or `False` randomly.
 
-# In[2]:
+# In[3]:
 
 
 class SporadicClassifier(BaseEstimator):
@@ -30,7 +33,7 @@ class SporadicClassifier(BaseEstimator):
 
 # __it does not matter what the dataset is, as the classifier is not depending on the inputs__
 
-# In[3]:
+# In[4]:
 
 
 # let's create a dataset of size 100 instances.
@@ -39,7 +42,7 @@ X = np.random.rand(100)
 
 # __let's compute the label distribution for different configuration of the classifier__
 
-# In[4]:
+# In[5]:
 
 
 cla = SporadicClassifier(p=0.3, method='gaussian')
@@ -52,7 +55,7 @@ c = Counter(y)
 
 # __create reusable functions__
 
-# In[5]:
+# In[6]:
 
 
 def compute_prior(y):
@@ -70,7 +73,7 @@ def compute_prior(y):
 
 # __extract the probability of True predictions for the dataset using different random generators__
 
-# In[6]:
+# In[7]:
 
 
 p_vals = np.arange(0., 1., 0.1)
@@ -92,7 +95,7 @@ for p in p_vals:
 
 # __plot the trends side on the same plot for comparison__
 
-# In[7]:
+# In[8]:
 
 
 import matplotlib.pyplot as plt
@@ -110,7 +113,7 @@ plt.show()
 
 # ## Task 2
 
-# In[8]:
+# In[9]:
 
 
 from sklearn.datasets import load_iris
@@ -123,7 +126,7 @@ df['target'] = iris.target
 Counter(df['target'].values)
 
 
-# In[9]:
+# In[10]:
 
 
 # set the setosa (class 0) as true and rest as false
@@ -132,14 +135,14 @@ X = iris.data
 y = df['binary_target'].values
 
 
-# In[10]:
+# In[11]:
 
 
 label_prior = compute_prior(y)
 print(f"Label prior (proportion of Setosa): {label_prior}")
 
 
-# In[11]:
+# In[12]:
 
 
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_curve, auc, precision_recall_curve
@@ -182,7 +185,7 @@ for p in p_values:
     auprc_list.append(auprc)
 
 
-# In[12]:
+# In[13]:
 
 
 # Plot Precision, Recall, and F1 scores as line plots
@@ -197,7 +200,7 @@ plt.legend()
 plt.show()
 
 
-# In[13]:
+# In[14]:
 
 
 # Plot PRC (Precision-Recall Curve)
@@ -210,7 +213,7 @@ plt.legend()
 plt.show()
 
 
-# In[18]:
+# In[15]:
 
 
 # Plot RoC Curve
@@ -224,7 +227,7 @@ plt.legend()
 plt.show()
 
 
-# In[19]:
+# In[16]:
 
 
 # Report AUPRC and AUROC
@@ -237,29 +240,33 @@ print(f"AUROC: {avg_auroc}")
 
 # ## Task 3
 
-# In[17]:
+# In[20]:
 
 
 # generalise plotting as a function
-def plot_decision_boundary(classifier, method, p_values, title):
+def plot_decision_boundary(cls, dist, p_val, title, xx, yy):
     fig, axes = plt.subplots(1, len(p_values), figsize=(16, 4))
     cmap_light = plt.cm.coolwarm
     
-    for idx, p in enumerate(p_values):
-        classifier = SporadicClassifier(method=method, p=p)
+    for idx, p in enumerate(p_val):
+        cls = SporadicClassifier(method=dist, p=p)
         
-        Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = cls.predict(np.c_[xx.ravel(), yy.ravel()])
         Z = Z.reshape(xx.shape)
         
         axes[idx].contourf(xx, yy, Z, cmap=cmap_light)
         
         axes[idx].scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', marker='o', s=50, cmap=plt.cm.coolwarm)
-        axes[idx].set_title(f"{method.capitalize()}: p={p}")
+        axes[idx].set_title(f"{dist.capitalize()}: p={p}")
         axes[idx].set_xlabel('Petal length')
         axes[idx].set_ylabel('Petal width')
     
     plt.suptitle(title, fontsize=16)
     plt.show()
+
+
+# In[21]:
+
 
 # define ranges for axes
 x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
@@ -269,9 +276,9 @@ xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
                      np.arange(y_min, y_max, 0.1))
 p_values = np.arange(0, 1.1, 0.25)
 
-plot_decision_boundary(SporadicClassifier, 'bernoulli', p_values, "Decision boundaries for Bernoulli distribution")
-plot_decision_boundary(SporadicClassifier, 'normal', p_values, "Decision boundaries for Normal/Gaussian distribution")
-plot_decision_boundary(SporadicClassifier, 'uniform', p_values, "Decision boundaries for Uniform distribution")
+plot_decision_boundary(SporadicClassifier, 'bernoulli', p_values, "Decision boundaries for Bernoulli distribution", xx, yy)
+plot_decision_boundary(SporadicClassifier, 'normal', p_values, "Decision boundaries for Normal/Gaussian distribution", xx, yy)
+plot_decision_boundary(SporadicClassifier, 'uniform', p_values, "Decision boundaries for Uniform distribution", xx, yy)
 
 
 # In[ ]:
