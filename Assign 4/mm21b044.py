@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[57]:
 
 
 import numpy as np
@@ -12,7 +12,7 @@ from collections import Counter
 
 # Consider a `SporadicClassifier` that returns a random label in {`True`, `False`} for any test input that’s fed to it. This classifier does not require any training! Hope, that was already obvious to you. Implement this `SporadicClassifier` as a Python class by extending the `BaseEstimator` class of sklearn, so that you have mandatory methods such as `fit(X, y)` and `predict(X)` are implemented. As your guess, the `fit()` method would be a dummy ‘pass’, but the `predict()` method would return `True` or `False` randomly.
 
-# In[3]:
+# In[58]:
 
 
 class SporadicClassifier(BaseEstimator):
@@ -33,7 +33,7 @@ class SporadicClassifier(BaseEstimator):
 
 # __it does not matter what the dataset is, as the classifier is not depending on the inputs__
 
-# In[4]:
+# In[59]:
 
 
 # let's create a dataset of size 100 instances.
@@ -42,7 +42,7 @@ X = np.random.rand(100)
 
 # __let's compute the label distribution for different configuration of the classifier__
 
-# In[5]:
+# In[60]:
 
 
 cla = SporadicClassifier(p=0.3, method='gaussian')
@@ -55,7 +55,7 @@ c = Counter(y)
 
 # __create reusable functions__
 
-# In[6]:
+# In[61]:
 
 
 def compute_prior(y):
@@ -73,7 +73,7 @@ def compute_prior(y):
 
 # __extract the probability of True predictions for the dataset using different random generators__
 
-# In[7]:
+# In[62]:
 
 
 p_vals = np.arange(0., 1., 0.1)
@@ -95,7 +95,7 @@ for p in p_vals:
 
 # __plot the trends side on the same plot for comparison__
 
-# In[8]:
+# In[63]:
 
 
 import matplotlib.pyplot as plt
@@ -113,7 +113,7 @@ plt.show()
 
 # ## Task 2
 
-# In[9]:
+# In[64]:
 
 
 from sklearn.datasets import load_iris
@@ -126,7 +126,7 @@ df['target'] = iris.target
 Counter(df['target'].values)
 
 
-# In[10]:
+# In[65]:
 
 
 # set the setosa (class 0) as true and rest as false
@@ -135,14 +135,14 @@ X = iris.data
 y = df['binary_target'].values
 
 
-# In[11]:
+# In[66]:
 
 
 label_prior = compute_prior(y)
 print(f"Label prior (proportion of Setosa): {label_prior}")
 
 
-# In[12]:
+# In[67]:
 
 
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_curve, auc, precision_recall_curve
@@ -185,7 +185,7 @@ for p in p_values:
     auprc_list.append(auprc)
 
 
-# In[13]:
+# In[68]:
 
 
 # Plot Precision, Recall, and F1 scores as line plots
@@ -200,7 +200,7 @@ plt.legend()
 plt.show()
 
 
-# In[14]:
+# In[69]:
 
 
 # Plot PRC (Precision-Recall Curve)
@@ -213,7 +213,7 @@ plt.legend()
 plt.show()
 
 
-# In[15]:
+# In[70]:
 
 
 # Plot RoC Curve
@@ -227,7 +227,7 @@ plt.legend()
 plt.show()
 
 
-# In[16]:
+# In[71]:
 
 
 # Report AUPRC and AUROC
@@ -240,7 +240,7 @@ print(f"AUROC: {avg_auroc}")
 
 # ## Task 3
 
-# In[20]:
+# In[72]:
 
 
 # generalise plotting as a function
@@ -255,7 +255,6 @@ def plot_decision_boundary(cls, dist, p_val, title, xx, yy):
         Z = Z.reshape(xx.shape)
         
         axes[idx].contourf(xx, yy, Z, cmap=cmap_light)
-        
         axes[idx].scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', marker='o', s=50, cmap=plt.cm.coolwarm)
         axes[idx].set_title(f"{dist.capitalize()}: p={p}")
         axes[idx].set_xlabel('Petal length')
@@ -265,15 +264,14 @@ def plot_decision_boundary(cls, dist, p_val, title, xx, yy):
     plt.show()
 
 
-# In[21]:
+# In[73]:
 
 
 # define ranges for axes
 x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-y_min, y_max = y.min() - 1, y.max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
 
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                     np.arange(y_min, y_max, 0.1))
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.05), np.arange(y_min, y_max, 0.05))
 p_values = np.arange(0, 1.1, 0.25)
 
 plot_decision_boundary(SporadicClassifier, 'bernoulli', p_values, "Decision boundaries for Bernoulli distribution", xx, yy)
