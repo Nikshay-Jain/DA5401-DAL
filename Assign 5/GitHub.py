@@ -1,7 +1,6 @@
 import subprocess
 
 def push():
-    # subprocess.run(['git', 'pull'])
     try:
         subprocess.run(['git', 'push', '-u', 'origin', 'main'], check=True)
     except subprocess.CalledProcessError:
@@ -19,7 +18,6 @@ try:
     output = subprocess.check_output(command, shell=True, text=True, stderr=subprocess.STDOUT)
     file_lines = output.strip().split('\n')
 
-    print(file_lines)
     c=0
     if(file_lines[1][0:20] == "Your branch is ahead"):
         push()
