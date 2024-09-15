@@ -38,8 +38,6 @@ try:
     for i in range(l-c):
         status = file_lines[i+6][1:2]
         file_path = file_lines[i+6][13:]
-        print(status)
-        print(file_path)
 
         if status == 'd':
             act(file_path, "rm", "Deleted")
@@ -59,7 +57,6 @@ try:
         if(file_lines[k][0]=='U'):
             for i in range(l-c):
                 file_path = file_lines[i+k+2][1:]
-                print(file_path)
                 if(file_path==''):
                     break
                 else:
