@@ -20,7 +20,7 @@ try:
     file_lines = output.strip().split('\n')
 
     print(file_lines)
-
+    c=0
     if(file_lines[1][0:20] == "Your branch is ahead"):
         push()
 
@@ -34,9 +34,10 @@ try:
             file_path = file_lines[i+5][1:]
             print(file_path)
             act(file_path, "add", "Added")
+            c+=1
 
     # for updated/deleted files in an existing folder
-    for i in range(l):
+    for i in range(l-c):
         status = file_lines[i+6][1:2]
         file_path = file_lines[i+6][13:]
         print(status)
